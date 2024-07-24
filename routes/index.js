@@ -1,0 +1,160 @@
+var express = require('express');
+var router = express.Router();
+var localStrategy = require('passport-local');
+
+const users=require("./users");
+const postModel=require("./post");
+var passport=require("passport");
+const upload=require("./multer");
+passport.use(new localStrategy(users.authenticate()))
+
+router.get('/', function(req, res) {
+  res.render('index', {footer: false});
+});
+
+router.get('/login', function(req, res) {
+  res.render('login', {footer: false});
+});
+
+router.get('/feed',async function(req, res) {
+  const posts=await postModel.find().populate("user");
+  const user=await users.findOne({username:req.session.passport.user});
+
+  res.render('feed', {footer: true,posts,user});
+   console.log(posts);
+});
+
+router.get('/profile',isloggedIn, async function(req, res) {
+
+  const userdata=await users.findOne({username:req.session.passport.user}).populate('posts');
+  // console.log("picturesis",userdata );
+  res.render('profile', {footer:true,userdata});
+});
+
+
+router.get('/search', function(req, res) {
+  res.render('search', {footer: true});
+});
+
+router.get('/user/:search',async function(req, res) {
+  const search=req.params.search;
+  const user=await users.find({username: new RegExp('^'+search,'i')});
+  res.json(user);
+  console.log(user); 
+});
+
+router.get('/edit',async function(req, res) {
+  var user=await users.findOne({username:req.session.passport.user});
+
+  res.render('edit', {footer: true,user});
+});
+
+
+router.post('/update',async function(req, res) {
+ 
+     var user= await  users.findOneAndUpdate(
+          {username:req.session.passport.user},
+          {username:req.body.username,name:req.body.name,bio:req.body.bio},
+          {new:true}
+          )
+
+          req.login(user,function(err){
+            if(err) throw err;
+            else{
+              res.redirect("/profile");
+            }
+          })
+
+      
+  
+  
+});
+
+
+router.post('/edit/profilepicture', upload.single('image'),async function (req, res, next) {
+
+   var user=await users.findOne({username:req.session.passport.user});
+   user.profilePicture=req.file.filename;
+   await user.save();
+   res.redirect("/profile");
+   
+})
+
+
+router.get('/upload', function(req, res) {
+  res.render('upload', {footer: true});
+});
+
+
+router.post("/upload",upload.single('image'), async function(req,res){
+  const user= await users.findOne({username:req.session.passport.user});
+  const post= await postModel.create({
+    user:user._id,
+    caption: req.body.caption,
+    picture: req.file.filename
+  })
+
+  user.posts.push(post._id);
+  console.log("This is Post",post);
+  await user.save();
+  res.redirect("/profile");
+
+})
+
+
+router.post('/register', (req, res, next) => {
+var newUser = {
+
+  username:req.body.username,
+  name:req.body.name,
+  email:req.body.email,
+
+
+};
+users
+.register(newUser, req.body.password)
+.then((result) => {
+passport.authenticate('local')(req, res, () => {
+//destination after user register
+res.redirect('/feed');
+});
+})
+.catch((err) => {
+res.send(err);
+});
+});
+
+
+router.post(
+'/login',
+passport.authenticate('local', {
+successRedirect: '/feed',
+failureRedirect: '/login',
+}),
+(req, res, next) => {}
+);
+
+
+
+function isloggedIn(req, res, next) {
+if (req.isAuthenticated()) return next();
+else res.redirect('/login');
+}
+
+
+
+
+router.get('/logout', (req, res, next) => {
+if (req.isAuthenticated())
+req.logout((err) => {
+if (err) res.send(err);
+else res.redirect('/');
+});
+else {
+res.redirect('/');
+}
+});
+
+
+
+module.exports = router;
