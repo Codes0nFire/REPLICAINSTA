@@ -7,7 +7,7 @@ var logger = require('morgan');
 const passport=require("passport");
 const ExpressSession=require("express-session");
 const fileupload=require("express-fileupload");
-// require("dotenv").config();
+require("dotenv").config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -24,7 +24,7 @@ app.use(
 ExpressSession({
 resave: false,
 saveUninitialized: false,
-secret: 'huihhui',
+secret: `${process.env.SECRET}`,
 })
 );
 app.use(passport.initialize());
