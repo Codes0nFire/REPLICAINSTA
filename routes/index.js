@@ -6,6 +6,8 @@ const users=require("./users");
 const postModel=require("./post");
 var passport=require("passport");
 const upload=require("./multer");
+const imagekit=require("./imagekit");
+const path=require("path");
 passport.use(new localStrategy(users.authenticate()))
 
 router.get('/', function(req, res) {
@@ -71,10 +73,31 @@ router.post('/update',async function(req, res) {
 });
 
 
-router.post('/edit/profilepicture', upload.single('image'),async function (req, res, next) {
+router.post('/edit/profilepicture',async function (req, res, next) {
 
    var user=await users.findOne({username:req.session.passport.user});
-   user.profilePicture=req.file.filename;
+
+ 
+   const file=req.files.image;
+   const modifiedfilename=`profileImage-${Date.now()}${path.extname(file.name)}`;
+
+
+   if(user.profileImage.fileId !== ""){
+    await imagekit.deleteFile(user.profileImage.fileId)
+   }
+
+   const {fileId,url}= await imagekit.upload({
+    file:file.data,
+    fileName:modifiedfilename
+   });
+
+  
+   
+
+
+
+
+   user.profileImage={fileId,url};
    await user.save();
    res.redirect("/profile");
    
@@ -86,12 +109,28 @@ router.get('/upload', function(req, res) {
 });
 
 
-router.post("/upload",upload.single('image'), async function(req,res){
+router.post("/upload", async function(req,res){
   const user= await users.findOne({username:req.session.passport.user});
+
+
+  
+  const file=req.files.image;
+  const modifiedfilename=`postimage-${Date.now()}${path.extname(file.name)}`;
+
+
+  
+
+  const {fileId,url}= await imagekit.upload({
+   file:file.data,
+   fileName:modifiedfilename
+  });
+
+  
+
   const post= await postModel.create({
     user:user._id,
     caption: req.body.caption,
-    picture: req.file.filename
+    picture: {fileId,url}
   })
 
   user.posts.push(post._id);
