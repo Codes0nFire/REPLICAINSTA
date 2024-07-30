@@ -408,10 +408,52 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
  
  
   res.render("savedposts",{user,footer:true});
+ });
+
+
+
+ //setting
+
+
+ router.get("/setting", isloggedIn, async (req, res, next) => {
+
   
+  let user= await users.findOne({username:req.session.passport.user})
   
-   
-   
+ 
+ 
+  res.render("setting",{user,footer:true});
+ });
+
+
+
+
+ // delete account
+
+
+
+
+ router.get("/deleteaccount", isloggedIn, async (req, res, next) => {
+
+  
+  let user= await users.findOne({username:req.session.passport.user});
+
+  res.render("confirm",{user,footer:true});
+
+ });
+
+
+
+ //confirm
+
+ router.post("/confirm", isloggedIn, async (req, res, next) => {
+
+  let deleteduser= await users.findOneAndDelete({username:req.session.passport.user});
+
+  console.log("This account is deleted", deleteduser);
+
+  res.redirect("/");
+
  });
 
 

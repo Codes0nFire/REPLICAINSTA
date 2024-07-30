@@ -1,0 +1,27 @@
+<% include ./partials/header.ejs %>
+
+<body class="bg-zinc-900 text-white flex items-center justify-center min-h-screen">
+
+    <div class=" p-6 rounded-lg shadow-lg max-w-sm w-full">
+        <img class="w-1/4" src="/images/sociafusion-high-resolution-logo-white-transparent.png" alt="">
+        <h1 class="text-2xl font-semibold  mb-4">Delete Account</h1>
+        <p class=" mb-6"> Once your account is deleted, it cannot be recovered.</p>
+        
+        <form action="/confirm" method="post" onsubmit="return confirmDeletion()">
+            <input type="hidden" name="confirmation" value="DELETE" />
+            <button type="submit" class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300">Delete My Account</button>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <a href="/profile" class="text-white">Cancel</a>
+        </div>
+    </div>
+
+    <script>
+        function confirmDeletion() {
+            return confirm("Are you sure you want to delete your account? This action cannot be undone.");
+        }
+    </script>
+</body>
+
+<% include ./partials/footer.ejs %>
