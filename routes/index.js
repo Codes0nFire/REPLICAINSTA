@@ -348,6 +348,73 @@ console.log("you have deleted ",deletedpost);
 });
 
 
+//Navigate 
+
+
+
+
+
+router.get("/navigate", isloggedIn, async (req, res, next) => {
+
+  
+ let user= await users.findOne({username:req.session.passport.user});
+
+
+ res.render("navigator",{user});
+ 
+ 
+  
+  
+});
+
+
+
+//likedposts
+
+
+
+
+router.get("/userposts", isloggedIn, async (req, res, next) => {
+
+  
+  let user= await users.findOne({username:req.session.passport.user}).populate("posts");
+ 
+ 
+  res.render("userposts",{user,footer:true});
+  
+  
+   
+   
+ });
+
+
+
+
+
+ //saved posts
+
+ 
+router.get("/savedposts", isloggedIn, async (req, res, next) => {
+
+  
+  let user= await users.findOne({username:req.session.passport.user})
+  .populate({
+    path: 'saved', // Field to populate
+    populate: {
+        path: 'user', // Nested field to populate
+        model: 'user' // Model to use for nested population
+    }
+})
+ 
+ 
+  res.render("savedposts",{user,footer:true});
+  
+  
+   
+   
+ });
+
+
 
 
 module.exports = router;
