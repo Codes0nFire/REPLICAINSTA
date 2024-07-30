@@ -6,7 +6,7 @@ const postSchema = mongoose.Schema({
     ref: "user"
   },
   caption: String,
-  like: [{
+  likes: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "user"
   }],

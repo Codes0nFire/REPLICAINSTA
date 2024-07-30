@@ -26,9 +26,11 @@
      <% posts.reverse().forEach(function(singlepost){ %>
       <div class="post mt-10 w-full min-h-[50vh]">
         <div class="title px-4 flex items-center gap-2">
+        <a href="/profile/<%=singlepost.user._id  %>">
           <div class="w-[5vw] h-[5vw] bg-sky-100 rounded-full overflow-hidden">
             <img class="w-full h-full object-cover object-center" src="<%=singlepost.user.profileImage.url  %>" alt="">
           </div>
+        </a>
           <h4 class="text-sm"><%=singlepost.user.name  %></h4>
           <h6 class="text-xs opacity-30">1d</h6>
         </div>
@@ -37,13 +39,20 @@
         </div>
         <div class="options w-full px-4 flex justify-between items-center text-[1.4rem]">
           <div class="flex gap-3 mt-2">
-            <i class="ri-heart-3-line"></i>
+            
+            <a href="/like/<%=singlepost._id  %>">
+              <i style=<%=singlepost.likes.indexOf(user._id) == -1 ? "color:white;" : "color:#e83e8c;" %> class=<%=singlepost.likes.indexOf(user._id) == -1 ? "ri-heart-3-line" : "ri-heart-3-fill" %>></i>
+            </a>
+            
+            <!-- ri-heart-3-line -->
             <i class="ri-chat-3-line"></i>
             <i class="ri-share-circle-line"></i>
           </div>
-          <i class="ri-bookmark-line"></i>
+        <a href="/save/<%=singlepost._id  %>">
+          <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:white;" : "color:#007bff;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? "ri-bookmark-line" : "ri-bookmark-fill" %>></i>
+        </a>
         </div>
-        <h3 class="px-4 mt-2 text-sm leading-none tracking-tight">0 likes</h3>
+        <h3 class="px-4 mt-2 text-sm leading-none tracking-tight"><%= singlepost.likes.length  %> likes</h3>
         <h2 class="text-white font-light text-sm mt-2"><span class="font-semibold pl-4 pr-2"><%=singlepost.user.username  %></span><%=singlepost.caption  %></h2>
       </div>
    <%  }) %>

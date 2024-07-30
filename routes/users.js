@@ -12,18 +12,7 @@ var userSchema=mongoose.Schema({
 
 username:String,
 name:String,
-followers:[
-  {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"user"
-  }
-],
-followings:[
-  {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"user"
-  }
-],
+
 posts:[
   {
     type:mongoose.Schema.Types.ObjectId,
@@ -41,7 +30,28 @@ profileImage: {
 },
 bio:String,
 password:String,
-email:String,  
+email:String,
+
+saved: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "post",
+  },
+],
+
+
+followers: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+],
+following: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+],
 
 
 
