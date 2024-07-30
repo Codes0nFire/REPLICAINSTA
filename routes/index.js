@@ -239,19 +239,34 @@ router.get("/like/:PostId", isloggedIn, async (req, res, next) => {
 
 
 
-//user profile
 
 
 
 
-//likes
+
+//usernprofile
 router.get("/profile/:userId", isloggedIn, async (req, res, next) => {
   let user = await users.findOne({ _id: req.params.userId }).populate("posts");
-
+  let loggedInUser= await users.findOne({username:req.session.passport.user});
   
+  let userId= user._id;
+  let loggedInUserId=loggedInUser._id;
 
-  console.log("user");
-  res.render("userprofile",{user,footer: true});
+
+  console.log(userId,loggedInUserId);
+
+  if(loggedInUserId.equals(userId)){
+    res.redirect("/profile");
+  }
+
+
+  else{
+
+    res.render("userprofile",{user,footer: true,loggedInUser});
+
+  }
+  
+  
  
  
   
@@ -264,8 +279,45 @@ router.get("/profile/:userId", isloggedIn, async (req, res, next) => {
 
 
 
+//folllow 
+
+router.get("/follow/:userId", isloggedIn, async (req, res, next) => {
+  let user = await users.findOne({ _id: req.params.userId }).populate("posts");
+  let loggedInUser= await users.findOne({username:req.session.passport.user});
 
 
+  if(user.followers.indexOf(loggedInUser.id) == -1){
+
+    user.followers.push(loggedInUser.id);
+    loggedInUser.following.push(user.id);
+
+  }
+
+  else{
+
+     user.followers.splice(user.followers.indexOf(loggedInUser.id),1);
+     loggedInUser.following.splice(loggedInUser.following.indexOf(user.id),1);
+
+
+  }
+
+
+
+await user.save();
+
+await loggedInUser.save();
+
+
+
+  
+console.log("you started following ",user.username);
+  
+  res.redirect("back");
+ 
+ 
+  
+  
+});
 
 
 
