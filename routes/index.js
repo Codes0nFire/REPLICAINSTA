@@ -28,14 +28,15 @@ router.get('/feed',async function(req, res) {
 
 router.get('/profile',isloggedIn, async function(req, res) {
 
-  const userdata=await users.findOne({username:req.session.passport.user}).populate('posts');
+  const user=await users.findOne({username:req.session.passport.user}).populate('posts');
   // console.log("picturesis",userdata );
-  res.render('profile', {footer:true,userdata});
+  res.render('profile', {footer:true,user});
 });
 
 
-router.get('/search', function(req, res) {
-  res.render('search', {footer: true});
+router.get('/search',isloggedIn, async function(req, res) {
+  let user=await users.findOne({username:req.session.passport.user});
+  res.render('search', {footer: true,user});
 });
 
 router.get('/user/:search',async function(req, res) {
@@ -104,8 +105,10 @@ router.post('/edit/profilepicture',async function (req, res, next) {
 })
 
 
-router.get('/upload', function(req, res) {
-  res.render('upload', {footer: true});
+router.get('/upload',isloggedIn, async function(req, res) {
+
+  let user= await users.findOne({username:req.session.passport.user});
+  res.render('upload', {footer: true,user});
 });
 
 
@@ -311,6 +314,31 @@ await loggedInUser.save();
 
   
 console.log("you started following ",user.username);
+  
+  res.redirect("back");
+ 
+ 
+  
+  
+});
+
+
+
+
+
+// delete post 
+
+
+
+
+router.get("/delete/:postId", isloggedIn, async (req, res, next) => {
+
+  let post= await postModel.findOne({_id:req.params.postId});
+ 
+  let deletedpost= await postModel.findOneAndDelete({_id:post.id});
+  
+
+console.log("you have deleted ",deletedpost);
   
   res.redirect("back");
  
