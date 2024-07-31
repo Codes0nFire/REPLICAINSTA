@@ -34,7 +34,7 @@
           <h4 class="text-sm"><%=singlepost.user.name  %></h4>
         </a>
           
-          <h6 class="text-xs opacity-30">1d</h6>
+          <h6 class="text-xs opacity-30"><%=singlepost.date.toISOString().split('T')[0]  %></h6>
         </div>
         <div class="w-96 h-96 mt-4 bg-sky-100">
           <img class="w-full h-full overflow-hidden object-cover " src="<%=singlepost.picture.url  %>" alt="">
@@ -46,9 +46,9 @@
               <i style=<%=singlepost.likes.indexOf(user._id) == -1 ? "color:white;" : "color:#e83e8c;" %> class=<%=singlepost.likes.indexOf(user._id) == -1 ? "ri-heart-3-line" : "ri-heart-3-fill" %>></i>
             </a>
             
-            <!-- ri-heart-3-line -->
-            <i class="ri-chat-3-line"></i>
-            <i class="ri-share-circle-line"></i>
+           
+            
+         
           </div>
         <a href="/save/<%=singlepost._id  %>">
           <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:white;" : "color:#007bff;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? "ri-bookmark-line" : "ri-bookmark-fill" %>></i>

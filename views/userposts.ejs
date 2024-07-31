@@ -26,10 +26,7 @@
             <a href="/like/<%=singlepost._id  %>">
               <i style=<%=singlepost.likes.indexOf(user._id) == -1 ? "color:white;" : "color:#e83e8c;" %> class=<%=singlepost.likes.indexOf(user._id) == -1 ? "ri-heart-3-line" : "ri-heart-3-fill" %>></i>
             </a>
-            
-            <!-- ri-heart-3-line -->
-            <i class="ri-chat-3-line"></i>
-            <i class="ri-share-circle-line"></i>
+          
           </div>
         <a href="/save/<%=singlepost._id  %>">
           <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:white;" : "color:#007bff;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? "ri-bookmark-line" : "ri-bookmark-fill" %>></i>

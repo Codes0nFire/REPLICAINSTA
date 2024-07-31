@@ -265,7 +265,7 @@ router.get("/profile/:userId", isloggedIn, async (req, res, next) => {
 
   else{
 
-    res.render("userprofile",{user,footer: true,loggedInUser});
+    res.render("userprofile",{ profileuser:user,footer: true,user:loggedInUser});
 
   }
   
