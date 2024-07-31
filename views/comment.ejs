@@ -11,31 +11,36 @@
 
     <a class=" mb-4 text-lg text-white" href="/feed"><i class="ri-arrow-left-s-line"></i> Home</a>
     <h1 class="text-xl font-bold mb-4">Comments</h1>
-<div class="flex flex-col justify-start h-[80vh]   overflow-y-auto">
+<div class="flex flex-col justify-start h-[70vh]   overflow-y-auto">
     
 
+   <% post.comments.forEach(function(comment){ %>
+
     <div class="mb-4">
-        <div class="flex items-center mb-2">
-            <img src="https://via.placeholder.com/50" alt="profile" class="rounded-full w-10 h-10 mr-3">
+        <div class="flex items-center mb-2 ">
+            <img src="<%=comment.user.profileImage.url %>" alt="profile" class="rounded-full w-10 h-10 mr-3 object-cover">
             <div>
-                <span class="font-bold">potdar_vinit_1820</span> <span class="text-gray-500">1 h</span>
+                <span class="font-bold"><%=comment.user.username %></span> 
             </div>
         </div>
-        <p class="ml-13">After ..BCCI posting Rohit deleted that post 😢</p>
+        <p class="ml-13"><%=comment.text  %></p>
        
        
     </div>
    
 
+  <% })  %>
+
     
 
 
    
 </div>
 
-<div class="mb-4 ">
-    <input type="text" placeholder="Add a comment..." class=" fixed  w-[90vw] bg-gray-800 rounded-full px-4 py-2 text-white">
-</div>
+<form class="mb-4 fixed " method="post" action="/addcomment/<%=post._id%>" >
+    <input required name="text" type="text" placeholder="Add a comment..." class="  w-[90vw] bg-gray-800 rounded-full px-4 py-2 text-white">
+    <input  class=" w-[30vw] bg-gray-800 rounded-full px-2 text-center py-2 text-white mt-2" type="submit" value="Comment">
+</form>
 
 </body>
 </html>

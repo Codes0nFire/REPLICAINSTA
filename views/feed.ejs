@@ -46,7 +46,7 @@
               <i style=<%=singlepost.likes.indexOf(user._id) == -1 ? "color:white;" : "color:#e83e8c;" %> class=<%=singlepost.likes.indexOf(user._id) == -1 ? "ri-heart-3-line" : "ri-heart-3-fill" %>></i>
             </a>
             
-            <a href="/comment">
+            <a href="/comment/<%=singlepost._id  %>">
               <i class="ri-chat-3-line"></i>
             </a>
             

@@ -4,6 +4,7 @@ var localStrategy = require('passport-local');
 
 const users=require("./users");
 const postModel=require("./post");
+const commentModel= require("./comment");
 var passport=require("passport");
 const upload=require("./multer");
 const imagekit=require("./imagekit");
@@ -458,15 +459,51 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
 
 
 
+ //comment page
+
+ router.get("/comment/:postId", isloggedIn, async (req, res, next) => {
+  
+
+  let user= await users.findOne({username:req.session.passport.user});
+  let post= await postModel.findOne({_id:req.params.postId})
+  .populate({
+    path: 'comments',
+    populate: {
+      path: 'user',
+      select: 'user profileImage',
+    }})
+  
+  console.log("This is post =>",post);
+  res.render("comment",{user,post});
+
+ });
+
+
+
+ 
  //comment
 
- router.get("/comment", isloggedIn, async (req, res, next) => {
-
+ router.post("/addcomment/:postId", isloggedIn, async (req, res, next) => {
   
 
+  let user= await users.findOne({username:req.session.passport.user});
+  let post= await postModel.findOne({_id:req.params.postId});
   
+   let comment= await commentModel.create({
 
-  res.render("comment");
+    text:req.body.text,
+
+    user: user,
+    post:post
+   })
+
+    post.comments.push(comment._id);
+    await post.save();
+
+    // console.log(comment);
+
+
+   res.redirect("back");
 
  });
 
