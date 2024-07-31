@@ -1,5 +1,5 @@
 <% include ./partials/header.ejs %>
-  <div class="w-full min-h-screen bg-zinc-900 text-white py-5">
+  <div class="w-full min-h-screen bg-zinc-900 text-white py-5 overflow-x-hidden">
     <div class="w-full px-4 flex items-center justify-between">
       
       <div class="icons -mt-2 flex justify-end items-center w-full">
@@ -9,9 +9,9 @@
       </div>
     </div>
      <h1 class=" text-center text-2xl p-4">Saved Posts</h1>
-    <div class="posts mb-20">
+    <div class="posts mb-20 flex justify-between gap-20 flex-wrap">
      <% user.saved.reverse().forEach(function(singlepost){ %>
-      <div class="post mt-10 w-full min-h-[50vh]">
+      <div class="post mt-10  min-h-[50vh]">
         <div class="title px-4 flex items-center gap-2">
         <a href="/profile/<%=singlepost.user._id  %>" class="flex gap-1">
           <div class="w-[5vw] h-[5vw] bg-sky-100 rounded-full overflow-hidden">
@@ -31,12 +31,14 @@
             <a href="/like/<%=singlepost._id  %>">
               <i style=<%=singlepost.likes.indexOf(user._id) == -1 ? "color:white;" : "color:#e83e8c;" %> class=<%=singlepost.likes.indexOf(user._id) == -1 ? "ri-heart-3-line" : "ri-heart-3-fill" %>></i>
             </a>
+
+            <a href="/save/<%=singlepost._id  %>">
+                <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:#007bff;" : "color:white;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? " ri-bookmark-fill" : "ri-bookmark-line" %>></i>
+              </a>
             
            
           </div>
-        <a href="/save/<%=singlepost._id  %>">
-          <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:#007bff;" : "color:white;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? " ri-bookmark-fill" : "ri-bookmark-line" %>></i>
-        </a>
+       
         </div>
         <h3 class="px-4 mt-2 text-sm leading-none tracking-tight"><%= singlepost.likes.length  %> likes</h3>
         <h2 class="text-white font-light text-sm mt-2"><span class="font-semibold pl-4 pr-2"><%=singlepost.user.username  %></span><%=singlepost.caption  %></h2>

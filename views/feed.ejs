@@ -1,11 +1,11 @@
 <% include ./partials/header.ejs %>
-  <div class="w-full min-h-screen bg-zinc-900 text-white py-5">
+  <div class="w-full min-h-screen bg-zinc-900 text-white py-5 overflow-x-hidden">
     <div class="w-full px-4 flex items-center justify-between">
       
       <div class="icons -mt-2 flex justify-end items-center w-full">
        
         
-        <img class="w-1/6" src="/images/sociafusion-high-resolution-logo-white-transparent.png" alt="">
+        <img class="w-[10vw]" src="/images/sociafusion-high-resolution-logo-white-transparent.png" alt="">
       </div>
     </div>
     <div class="story px-3 flex gap-3 overflow-auto mt-5">
@@ -23,9 +23,9 @@
     
    
     </div>
-    <div class="posts mb-20">
+    <div class="posts mb-20 flex gap-20 justify-between flex-wrap">
      <% posts.reverse().forEach(function(singlepost){ %>
-      <div class="post mt-10 w-full min-h-[50vh]">
+      <div class="post mt-10  min-h-[50vh]">
         <div class="title px-4 flex items-center gap-2">
         <a href="/profile/<%=singlepost.user._id  %>" class="flex gap-1">
           <div class="w-[5vw] h-[5vw] bg-sky-100 rounded-full overflow-hidden">
@@ -49,12 +49,15 @@
             <a href="/comment/<%=singlepost._id  %>">
               <i class="ri-chat-3-line"></i>
             </a>
+
+
+            <a href="/save/<%=singlepost._id  %>">
+              <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:white;" : "color:#007bff;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? "ri-bookmark-line" : "ri-bookmark-fill" %>></i>
+            </a>
             
          
           </div>
-        <a href="/save/<%=singlepost._id  %>">
-          <i style=<%=user.saved.indexOf(singlepost._id) == -1 ? "color:white;" : "color:#007bff;" %> class=<%=user.saved.indexOf(singlepost._id) == -1 ? "ri-bookmark-line" : "ri-bookmark-fill" %>></i>
-        </a>
+      
         </div>
         <h3 class="px-4 mt-2 text-sm leading-none tracking-tight"><%= singlepost.likes.length  %> likes</h3>
         <h2 class="text-white font-light text-sm mt-2"><span class="font-semibold pl-4 pr-2"><%=singlepost.user.username  %></span><%=singlepost.caption  %></h2>
