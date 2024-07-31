@@ -458,5 +458,19 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
 
 
 
+ //comment
+
+ router.get("/comment", isloggedIn, async (req, res, next) => {
+
+  
+
+  
+
+  res.render("comment");
+
+ });
+
+
+
 
 module.exports = router;
