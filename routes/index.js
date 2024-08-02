@@ -19,7 +19,7 @@ router.get('/login', function(req, res) {
   res.render('login', {footer: false});
 });
 
-router.get('/feed',async function(req, res) {
+router.get('/feed',isloggedIn,async function(req, res) {
   const posts=await postModel.find().populate("user");
   const user=await users.findOne({username:req.session.passport.user});
 
@@ -315,7 +315,10 @@ await loggedInUser.save();
 
   
 console.log("you started following ",user.username);
-  
+
+
+
+
   res.redirect("back");
  
  
@@ -361,12 +364,33 @@ router.get("/navigate", isloggedIn, async (req, res, next) => {
  let user= await users.findOne({username:req.session.passport.user});
 
 
- res.render("navigator",{user});
+ res.render("navigator",{user,previousUrl:"/feed"});
  
  
   
   
 });
+
+
+
+//aboutus
+
+
+router.get("/about", isloggedIn, async (req, res, next) => {
+
+  
+  let user= await users.findOne({username:req.session.passport.user});
+ 
+ 
+  res.render("about",{user});
+  
+  
+   
+   
+ });
+
+
+
 
 
 
@@ -507,6 +531,14 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
 
  });
 
+
+
+ // story 
+
+
+ //      setTimeout(() => {
+//  window.location.href = "<%= previousUrl %>";
+// }, 5000); // 5000 milliseconds = 5 seconds
 
 
 
