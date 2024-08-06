@@ -532,6 +532,27 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
  });
 
 
+//story
+
+
+router.get("/story", isloggedIn, async (req, res, next) => {
+  
+
+  let user= await users.findOne({username:req.session.passport.user});
+ 
+  res.render("addstory",{footer:true,user})
+
+
+  
+  
+ });
+
+
+
+
+
+
+
 
  // story 
 
