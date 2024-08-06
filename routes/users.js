@@ -19,7 +19,12 @@ posts:[
       ref:"post"
   }
 ],
-story:[],
+story:[
+  {
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"story"
+  }
+],
 messages:[],
 profileImage: {
   type: Object,

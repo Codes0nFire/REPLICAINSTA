@@ -8,6 +8,7 @@
         <img class="w-[10vw]" src="/images/sociafusion-high-resolution-logo-white-transparent.png" alt="">
       </div>
     </div>
+  <a href="/viewstory/<%=user._id  %>">
     <div class="story px-3 flex gap-3 overflow-auto mt-5">
       <div class="circle flex-shrink-0">
         <div
@@ -23,6 +24,7 @@
     
    
     </div>
+  </a>
     <div class="posts mb-20 flex gap-20 justify-between flex-wrap">
      <% posts.reverse().forEach(function(singlepost){ %>
       <div class="post mt-10  min-h-[50vh]">

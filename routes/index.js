@@ -5,6 +5,7 @@ var localStrategy = require('passport-local');
 const users=require("./users");
 const postModel=require("./post");
 const commentModel= require("./comment");
+const storyModel=require("./story")
 var passport=require("passport");
 const upload=require("./multer");
 const imagekit=require("./imagekit");
@@ -539,13 +540,57 @@ router.get("/story", isloggedIn, async (req, res, next) => {
   
 
   let user= await users.findOne({username:req.session.passport.user});
+
+  console.log(user.story);
  
-  res.render("addstory",{footer:true,user})
-
-
-  
+  res.render("addstory",{footer:true,user});
   
  });
+
+
+ // story post
+
+
+
+ 
+router.post("/story",isloggedIn, async function(req,res){
+  const user= await users.findOne({username:req.session.passport.user});
+
+
+  
+  const file=req.files.image;
+  const modifiedfilename=`storyimage-${Date.now()}${path.extname(file.name)}`;
+
+
+  
+
+  const {fileId,url}= await imagekit.upload({
+   file:file.data,
+   fileName:modifiedfilename
+  });
+
+  
+
+  const story= await storyModel.create({
+    user:user._id,
+    picture:{
+      fileId,
+      url
+
+    },
+    
+
+  })
+    
+
+  user.story.push(story._id);
+  console.log("This is story",story);
+  await user.save();
+  res.redirect("/profile");
+
+})
+
+
 
 
 

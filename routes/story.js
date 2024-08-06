@@ -9,8 +9,11 @@ const storySchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 86400 // Stories will expire and be removed after 24 hours (86400 seconds)
+    expires:60
+   
+   
   },
+  
   picture: {
     type: Object,
     default:{
