@@ -594,6 +594,17 @@ router.post("/story",isloggedIn, async function(req,res){
 
 
 
+//viewstory
+router.get("/viewstory/:userId", isloggedIn, async (req, res, next) => {
+  
+
+  let user= await users.findOne({username:req.session.passport.user});
+
+  
+ 
+  res.render("viewstory",{footer:true,user});
+  
+ });
 
 
 
