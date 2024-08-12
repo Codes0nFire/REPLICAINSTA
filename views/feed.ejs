@@ -8,23 +8,27 @@
         <img class="w-[10vw]" src="/images/sociafusion-high-resolution-logo-white-transparent.png" alt="">
       </div>
     </div>
-  <a href="/viewstory/<%=user._id  %>">
-    <div class="story px-3 flex gap-3 overflow-auto mt-5">
-      <div class="circle flex-shrink-0">
-        <div
-          class="gradient w-[12vw] h-[12vw] bg-sky-100 rounded-full bg-gradient-to-r from-purple-700 to-orange-500 flex items-center justify-center">
-          <div class="inner w-[92%] h-[92%] rounded-full overflow-hidden">
-            <img class="w-full h-full object-cover"
-              src="<%=user.profileImage.url  %>"
-              alt="">
+   <% user.following.forEach(function(elem){ %>
+
+    <a href="/viewstory/<%=elem._id  %>">
+      <div class="story px-3 flex gap-3 overflow-auto mt-5">
+        <div class="circle flex-shrink-0">
+          <div
+            class="gradient w-[12vw] h-[12vw] bg-sky-100 rounded-full bg-gradient-to-r from-purple-700 to-orange-500 flex items-center justify-center">
+            <div class="inner w-[92%] h-[92%] rounded-full overflow-hidden">
+              <img class="w-full h-full object-cover"
+                src="<%=elem.profileImage.url  %>"
+                alt="">
+            </div>
           </div>
         </div>
-      </div>
+       
+      
      
-    
-   
-    </div>
-  </a>
+      </div>
+    </a>
+
+  <% }) %>
     <div class="posts mb-20 flex gap-20 justify-between flex-wrap">
      <% posts.reverse().forEach(function(singlepost){ %>
       <div class="post mt-10  min-h-[50vh]">

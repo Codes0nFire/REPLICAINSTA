@@ -16,7 +16,7 @@
         .story-wrapper {
             
             display: flex;
-            transition: transform 1s ease-in-out;
+            transition: transform 2s ease-in-out;
         }
         .story-item {
             flex: 0 0 100%;
@@ -42,7 +42,7 @@
             <% user.story.forEach(function(elem){ %>
 
             <div class="story-item flex items-center justify-center ">
-                <img src=" <%=elem.picture.url %>  " alt="Story 1" class="object-cover">
+                <img src=" <%=elem.picture.url %>  " alt="Story " class="object-cover">
             </div>
 
            <% }) %>
@@ -63,7 +63,7 @@
             storyWrapper.style.transform = `translateX(${offset}vw)`;
         }
 
-        setInterval(showNextStory, 2500); // Change story every 5 seconds
+        setInterval(showNextStory, 3500); // Change story every 5 seconds
 
         // Initialize first story
         showNextStory();
@@ -71,7 +71,7 @@
 
         setTimeout(() => {
         window.location.href = "/feed";
-        },(stories.length)*4000); // 5000 milliseconds = 5 seconds
+        },(stories.length)*4500); // 5000 milliseconds = 5 seconds
     </script>
 
 </body>

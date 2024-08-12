@@ -22,8 +22,9 @@ router.get('/login', function(req, res) {
 
 router.get('/feed',isloggedIn,async function(req, res) {
   const posts=await postModel.find().populate("user");
-  const user=await users.findOne({username:req.session.passport.user});
+  const user=await users.findOne({username:req.session.passport.user}).populate("following");
 
+  console.log(user)
   res.render('feed', {footer: true,posts,user});
   //  console.log(posts);
 });
@@ -598,7 +599,7 @@ router.post("/story",isloggedIn, async function(req,res){
 router.get("/viewstory/:userId", isloggedIn, async (req, res, next) => {
   
 
-  let user= await users.findOne({username:req.session.passport.user})
+  let user= await users.findOne({_id:req.params.userId})
   .populate("story")
   
   let time= user.story.length 
