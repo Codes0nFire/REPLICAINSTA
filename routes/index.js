@@ -598,11 +598,13 @@ router.post("/story",isloggedIn, async function(req,res){
 router.get("/viewstory/:userId", isloggedIn, async (req, res, next) => {
   
 
-  let user= await users.findOne({username:req.session.passport.user});
-
+  let user= await users.findOne({username:req.session.passport.user})
+  .populate("story")
+  
+  let time= user.story.length 
   
  
-  res.render("viewstory",{footer:true,user});
+  res.render("viewstory",{footer:true,user,time});
   
  });
 
