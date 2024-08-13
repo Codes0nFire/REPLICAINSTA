@@ -29,6 +29,27 @@
             object-fit: cover;
             max-width: 600px;
         }
+
+        .story-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)) 0 0 / 100% 10vh no-repeat;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            z-index: 10;
+            display: flex;
+            align-items:start;
+            justify-content: left;
+            padding-left: 5vw;
+
+        }
        
     </style>
      
@@ -37,11 +58,13 @@
 
     <div class="story-slider ">
         <div class="story-wrapper">
+           
             <!-- Add your stories here -->
 
             <% user.story.forEach(function(elem){ %>
-
+               
             <div class="story-item flex items-center justify-center ">
+               
                 <img src=" <%=elem.picture.url %>  " alt="Story " class="object-cover">
             </div>
 
@@ -49,12 +72,17 @@
             
             
         </div>
+        <div class="story-overlay">
+            <h1 class=" text-black" >@<%=user.username  %></h1>
+            <div class="bg-black timer  h-[5px] w-[0vw] absolute left-10 top-14" ></div>
+        </div>
       
     </div>
 
     <script>
         const storyWrapper = document.querySelector('.story-wrapper');
         const stories = document.querySelectorAll('.story-item');
+        const timer=document.querySelector(".timer");
         let currentIndex = 0;
         
         function showNextStory() {
@@ -67,9 +95,20 @@
 
        
         showNextStory();
+        
+         var width=0
+        const animateWidth= setInterval(() => {
+            width += 0.5;
+            timer.style.width = width + 'vw';
+
+            if (width >= 85) {
+                clearInterval(animateWidth);
+            }
+        }, ((stories.length)*2500)/170);
 
 
         setTimeout(() => {
+        
         window.location.href = "/feed";
         },(stories.length)*2500); 
     </script>
