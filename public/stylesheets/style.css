@@ -2,6 +2,10 @@
   display: none;
 }
 
+.storys::-webkit-scrollbar{
+  display: none;
+}
+
 a:focus {
   outline: none !important;
 }

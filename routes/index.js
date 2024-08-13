@@ -4,6 +4,7 @@ var localStrategy = require('passport-local');
 
 const users=require("./users");
 const postModel=require("./post");
+const cron = require('node-cron');
 const commentModel= require("./comment");
 const storyModel=require("./story")
 var passport=require("passport");
@@ -26,8 +27,20 @@ router.get('/feed',isloggedIn,async function(req, res) {
 
   console.log(user)
   res.render('feed', {footer: true,posts,user});
-  //  console.log(posts);
+  
 });
+
+
+
+
+
+
+
+
+
+
+
+
 
 router.get('/profile',isloggedIn, async function(req, res) {
 
@@ -613,12 +626,39 @@ router.get("/viewstory/:userId", isloggedIn, async (req, res, next) => {
 
 
 
- // story 
 
 
- //      setTimeout(() => {
-//  window.location.href = "<%= previousUrl %>";
-// }, 5000); // 5000 milliseconds = 5 seconds
+async function removeExpiredStoryIds() {
+  const userss = await users.find({ story: { $exists: true, $ne: [] } });
+
+  for (const user of userss) {
+    const updatedStories = [];
+
+    for (const storyId of user.story) {
+      const storyExists = await storyModel.exists({ _id: storyId });
+      
+      if (storyExists) {
+        updatedStories.push(storyId);
+      }
+    }
+
+   
+    user.story = updatedStories;
+    await user.save();
+  }
+}
+
+
+setInterval(removeExpiredStoryIds, 1 * 60 * 60 * 1000); 
+
+removeExpiredStoryIds()
+
+
+
+
+
+
+
 
 
 
