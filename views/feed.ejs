@@ -60,9 +60,9 @@
   
     <% }) %>
   </div>
-    <div class="posts mb-20 flex gap-20 justify-between flex-wrap">
+    <div class="posts mb-20 flex gap-20 justify-start flex-wrap">
      <% posts.reverse().forEach(function(singlepost){ %>
-      <div class="post mt-10  min-h-[50vh]">
+      <div class="post mt-10    min-h-[50vh]">
         <div class="title px-4 flex items-center gap-2">
         <a href="/profile/<%=singlepost.user._id  %>" class="flex gap-1">
           <div class="w-[5vw] h-[5vw] bg-sky-100 rounded-full overflow-hidden">

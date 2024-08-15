@@ -1,12 +1,13 @@
 var mongoose= require("mongoose");
+require("dotenv").config()
 
 const plm=require("passport-local-mongoose");
 
-mongoose.connect("mongodb://0.0.0.0/socialfusion").then(()=>{
+mongoose.connect(`${process.env.MONGO_URI}`).then(()=>{
  console.log(`connected to DB`);
 })
 .catch((err)=>{
-console.log(`error yah hai => err`);
+console.log(`error yah hai => ${err}`);
 })
 var userSchema = mongoose.Schema({
   username: {
