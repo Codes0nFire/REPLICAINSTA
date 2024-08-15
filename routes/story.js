@@ -9,7 +9,7 @@ const storySchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires:12*60*60
+    expires:50*60*60
    
    
   },

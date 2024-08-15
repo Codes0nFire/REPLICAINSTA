@@ -10,6 +10,8 @@
     </div>
   <div class="storys  flex items-center justify-start gap-4 overflow-x-auto flex-nowrap  ">
 
+   <% if(user.story.length >0){ %>
+
     <a href="/viewstory/<%=user._id  %>" class="inline-block">
       <div class="story px-3 flex gap-3 overflow-auto mt-5">
         <div class="circle flex-shrink-0">
@@ -28,8 +30,12 @@
       </div>
     </a>
 
+  <% } %>
+
    
     <% user.following.forEach(function(elem){ %>
+
+     <% if(elem.story.length > 0){  %>
 
       <a href="/viewstory/<%=elem._id  %>" class="inline-block">
         <div class="story px-3 flex gap-3 overflow-auto mt-5">
@@ -48,6 +54,9 @@
        
         </div>
       </a>
+
+
+     <%} %>
   
     <% }) %>
   </div>

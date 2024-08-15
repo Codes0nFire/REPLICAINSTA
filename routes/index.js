@@ -600,7 +600,7 @@ router.post("/story",isloggedIn, async function(req,res){
   user.story.push(story._id);
   console.log("This is story",story);
   await user.save();
-  res.redirect("/profile");
+  res.redirect("/feed");
 
 })
 
