@@ -1,3 +1,29 @@
-<h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Fusion</title>
+    <link rel="shortcut icon" href="/images/favicon-32x32.png" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+     
+   
+     
+</head>
+<body class="bg-gray-900 flex items-center justify-center h-screen w-screen">
+
+ 
+<h1 class="text-red-600 text-[5vw] font-light text-center"><%= error.message  %></h1>
+
+<script>
+    setTimeout(() => {
+        
+        window.location.href = "/";
+        },9000); 
+</script>
+
+</body>
+</html>
+
+

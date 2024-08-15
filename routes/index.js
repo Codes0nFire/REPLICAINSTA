@@ -4,6 +4,7 @@ var localStrategy = require('passport-local');
 
 const users=require("./users");
 const postModel=require("./post");
+const cron = require('node-cron');
 const commentModel= require("./comment");
 const storyModel=require("./story")
 var passport=require("passport");
@@ -21,13 +22,28 @@ router.get('/login', function(req, res) {
 });
 
 router.get('/feed',isloggedIn,async function(req, res) {
-  const posts=await postModel.find().populate("user");
+  try{
+    const posts=await postModel.find().populate("user");
   const user=await users.findOne({username:req.session.passport.user}).populate("following");
 
- 
+  
   res.render('feed', {footer: true,posts,user});
+  }
+  catch(err){
+    res.render("error",err)
+  }
   
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -44,21 +60,21 @@ router.get('/search',isloggedIn, async function(req, res) {
   res.render('search', {footer: true,user});
 });
 
-router.get('/user/:search',isloggedIn,async function(req, res) {
+router.get('/user/:search',async function(req, res) {
   const search=req.params.search;
   const user=await users.find({username: new RegExp('^'+search,'i')});
   res.json(user);
-  
+ 
 });
 
-router.get('/edit',isloggedIn,async function(req, res) {
+router.get('/edit',async function(req, res) {
   var user=await users.findOne({username:req.session.passport.user});
 
   res.render('edit', {footer: true,user});
 });
 
 
-router.post('/update',isloggedIn,async function(req, res) {
+router.post('/update',async function(req, res) {
  
      var user= await  users.findOneAndUpdate(
           {username:req.session.passport.user},
@@ -69,13 +85,17 @@ router.post('/update',isloggedIn,async function(req, res) {
           req.login(user,function(err){
             if(err) throw err;
             else{
-              res.redirect("/profile");
+              res.redirect("/feed");
             }
           })
+
+      
+  
+  
 });
 
 
-router.post('/edit/profilepicture',isloggedIn,async function (req, res, next) {
+router.post('/edit/profilepicture',async function (req, res, next) {
 
    var user=await users.findOne({username:req.session.passport.user});
 
@@ -93,6 +113,12 @@ router.post('/edit/profilepicture',isloggedIn,async function (req, res, next) {
     fileName:modifiedfilename
    });
 
+  
+   
+
+
+
+
    user.profileImage={fileId,url};
    await user.save();
    res.redirect("/profile");
@@ -107,7 +133,7 @@ router.get('/upload',isloggedIn, async function(req, res) {
 });
 
 
-router.post("/upload",isloggedIn, async function(req,res){
+router.post("/upload", async function(req,res){
   const user= await users.findOne({username:req.session.passport.user});
 
 
@@ -132,19 +158,20 @@ router.post("/upload",isloggedIn, async function(req,res){
   })
 
   user.posts.push(post._id);
-
+ 
   await user.save();
   res.redirect("/profile");
 
 })
 
 
-router.post('/register',isloggedIn, (req, res, next) => {
+router.post('/register', (req, res, next) => {
 var newUser = {
 
   username:req.body.username,
   name:req.body.name,
   email:req.body.email,
+  contact:req.body.contact,
 
 
 };
@@ -157,7 +184,8 @@ res.redirect('/feed');
 });
 })
 .catch((err) => {
-res.send(err);
+ 
+res.render("error",{error:err});
 });
 });
 
@@ -209,7 +237,7 @@ router.get("/save/:PostId", isloggedIn, async (req, res, next) => {
     user.saved.splice(user.saved.indexOf(req.params.PostId), 1);
   }
   await user.save();
-
+ 
   res.redirect("back");
 });
 
@@ -229,7 +257,7 @@ router.get("/like/:PostId", isloggedIn, async (req, res, next) => {
     post.likes.splice(post.likes.indexOf(user.id), 1);
   }
   await post.save();
-  
+ 
   res.redirect("back");
 });
 
@@ -251,7 +279,7 @@ router.get("/profile/:userId", isloggedIn, async (req, res, next) => {
   let loggedInUserId=loggedInUser._id;
 
 
-  
+ 
 
   if(loggedInUserId.equals(userId)){
     res.redirect("/profile");
@@ -418,10 +446,10 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
   
   let user= await users.findOne({username:req.session.passport.user})
   .populate({
-    path: 'saved', 
+    path: 'saved', // Field to populate
     populate: {
-        path: 'user', 
-        model: 'user' 
+        path: 'user', // Nested field to populate
+        model: 'user' // Model to use for nested population
     }
 })
  
@@ -488,7 +516,7 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
     path: 'comments',
     populate: {
       path: 'user',
-      select: 'user profileImage',
+      select: 'user profileImage username',
     }})
   
   
@@ -534,7 +562,7 @@ router.get("/story", isloggedIn, async (req, res, next) => {
 
   let user= await users.findOne({username:req.session.passport.user});
 
-
+  
  
   res.render("addstory",{footer:true,user});
   
@@ -577,7 +605,7 @@ router.post("/story",isloggedIn, async function(req,res){
     
 
   user.story.push(story._id);
-
+  
   await user.save();
   res.redirect("/feed");
 
@@ -629,8 +657,6 @@ async function removeExpiredStoryIds() {
 
 
 
-
-
 //viewfollowers
 router.get("/followers", isloggedIn, async (req, res, next) => {
   
@@ -661,9 +687,6 @@ router.get("/following", isloggedIn, async (req, res, next) => {
   res.render("following",{footer:true,user});
   
  });
-
-
-
 
 
 
