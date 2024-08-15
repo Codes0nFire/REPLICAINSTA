@@ -2,7 +2,7 @@ var mongoose= require("mongoose");
 
 const plm=require("passport-local-mongoose");
 
-mongoose.connect("mongodb://0.0.0.0/newinstadb").then(()=>{
+mongoose.connect("mongodb://0.0.0.0/socialfusion").then(()=>{
  console.log(`connected to DB`);
 })
 .catch((err)=>{

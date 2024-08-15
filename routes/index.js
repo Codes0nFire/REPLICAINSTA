@@ -22,16 +22,11 @@ router.get('/login', function(req, res) {
 });
 
 router.get('/feed',isloggedIn,async function(req, res) {
-  try{
-    const posts=await postModel.find().populate("user");
+  const posts=await postModel.find().populate("user");
   const user=await users.findOne({username:req.session.passport.user}).populate("following");
 
   
   res.render('feed', {footer: true,posts,user});
-  }
-  catch(err){
-    res.render("error",err)
-  }
   
 });
 
@@ -363,7 +358,7 @@ router.get("/delete/:postId", isloggedIn, async (req, res, next) => {
  
   let deletedpost= await postModel.findOneAndDelete({_id:post.id});
   
-
+  await imagekit.deleteFile(post.picture.fileId)
 
   
   res.redirect("back");
@@ -493,11 +488,54 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
 
  //confirm
 
- router.post("/confirm", isloggedIn, async (req, res, next) => {
+ router.post("/confirm", isloggedIn, async (req, res, next) => { 
+
+  let user=await users.findOne({username:req.session.passport.user}).populate("posts")
+  .populate("story")
+
+  user.posts.forEach(async function(post){
+
+    await postModel.findOneAndDelete({_id:post.id})
+
+     imageId=post.picture.fileId 
+
+     await imagekit.deleteFile(imageId);
+
+
+  })
+
+user.story.forEach(async function(story){
+
+  await storyModel.findOneAndDelete({_id:story.id})
+
+   imageId=story.picture.fileId 
+
+   await imagekit.deleteFile(imageId);
+
+
+})
+
+async function deleteProfileImage(){
+
+  
+const profileImageId= user.profileImage.fileId
+
+await imagekit.deleteFile(profileImageId);
+
+}
+
+deleteProfileImage()
+
+
+
+  
 
   let deleteduser= await users.findOneAndDelete({username:req.session.passport.user});
 
   
+  let deletedid=   await users.deleteOne({_id:user.id})
+
+  console.log(deletedid,deleteduser)
 
   res.redirect("/");
 
