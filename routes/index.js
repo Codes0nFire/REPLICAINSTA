@@ -4,7 +4,6 @@ var localStrategy = require('passport-local');
 
 const users=require("./users");
 const postModel=require("./post");
-const cron = require('node-cron');
 const commentModel= require("./comment");
 const storyModel=require("./story")
 var passport=require("passport");
@@ -13,7 +12,7 @@ const imagekit=require("./imagekit");
 const path=require("path");
 passport.use(new localStrategy(users.authenticate()))
 
-router.get('/',isloggedIn, function(req, res) {
+router.get('/', function(req, res) {
   res.render('index', {footer: false});
 });
 
@@ -25,27 +24,17 @@ router.get('/feed',isloggedIn,async function(req, res) {
   const posts=await postModel.find().populate("user");
   const user=await users.findOne({username:req.session.passport.user}).populate("following");
 
-  console.log(user)
+ 
   res.render('feed', {footer: true,posts,user});
   
 });
 
 
 
-
-
-
-
-
-
-
-
-
-
 router.get('/profile',isloggedIn, async function(req, res) {
 
   const user=await users.findOne({username:req.session.passport.user}).populate('posts');
-  // console.log("picturesis",userdata );
+  
   res.render('profile', {footer:true,user});
 });
 
@@ -59,7 +48,7 @@ router.get('/user/:search',isloggedIn,async function(req, res) {
   const search=req.params.search;
   const user=await users.find({username: new RegExp('^'+search,'i')});
   res.json(user);
-  console.log(user); 
+  
 });
 
 router.get('/edit',isloggedIn,async function(req, res) {
@@ -83,10 +72,6 @@ router.post('/update',isloggedIn,async function(req, res) {
               res.redirect("/profile");
             }
           })
-
-      
-  
-  
 });
 
 
@@ -107,12 +92,6 @@ router.post('/edit/profilepicture',isloggedIn,async function (req, res, next) {
     file:file.data,
     fileName:modifiedfilename
    });
-
-  
-   
-
-
-
 
    user.profileImage={fileId,url};
    await user.save();
@@ -153,7 +132,7 @@ router.post("/upload",isloggedIn, async function(req,res){
   })
 
   user.posts.push(post._id);
-  console.log("This is Post",post);
+
   await user.save();
   res.redirect("/profile");
 
@@ -173,7 +152,7 @@ users
 .register(newUser, req.body.password)
 .then((result) => {
 passport.authenticate('local')(req, res, () => {
-//destination after user register
+
 res.redirect('/feed');
 });
 })
@@ -230,7 +209,7 @@ router.get("/save/:PostId", isloggedIn, async (req, res, next) => {
     user.saved.splice(user.saved.indexOf(req.params.PostId), 1);
   }
   await user.save();
-  console.log("saved",user.saved);
+
   res.redirect("back");
 });
 
@@ -250,7 +229,7 @@ router.get("/like/:PostId", isloggedIn, async (req, res, next) => {
     post.likes.splice(post.likes.indexOf(user.id), 1);
   }
   await post.save();
-  console.log("liked by",user.id,"post is ",post);
+  
   res.redirect("back");
 });
 
@@ -272,7 +251,7 @@ router.get("/profile/:userId", isloggedIn, async (req, res, next) => {
   let loggedInUserId=loggedInUser._id;
 
 
-  console.log(userId,loggedInUserId);
+  
 
   if(loggedInUserId.equals(userId)){
     res.redirect("/profile");
@@ -329,7 +308,7 @@ await loggedInUser.save();
 
 
   
-console.log("you started following ",user.username);
+
 
 
 
@@ -357,7 +336,7 @@ router.get("/delete/:postId", isloggedIn, async (req, res, next) => {
   let deletedpost= await postModel.findOneAndDelete({_id:post.id});
   
 
-console.log("you have deleted ",deletedpost);
+
   
   res.redirect("back");
  
@@ -439,10 +418,10 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
   
   let user= await users.findOne({username:req.session.passport.user})
   .populate({
-    path: 'saved', // Field to populate
+    path: 'saved', 
     populate: {
-        path: 'user', // Nested field to populate
-        model: 'user' // Model to use for nested population
+        path: 'user', 
+        model: 'user' 
     }
 })
  
@@ -490,7 +469,7 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
 
   let deleteduser= await users.findOneAndDelete({username:req.session.passport.user});
 
-  console.log("This account is deleted", deleteduser);
+  
 
   res.redirect("/");
 
@@ -512,7 +491,7 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
       select: 'user profileImage',
     }})
   
-  console.log("This is post =>",post);
+  
   res.render("comment",{user,post});
 
  });
@@ -539,7 +518,7 @@ router.get("/savedposts", isloggedIn, async (req, res, next) => {
     post.comments.push(comment._id);
     await post.save();
 
-    // console.log(comment);
+    
 
 
    res.redirect("back");
@@ -555,7 +534,7 @@ router.get("/story", isloggedIn, async (req, res, next) => {
 
   let user= await users.findOne({username:req.session.passport.user});
 
-  console.log(user.story);
+
  
   res.render("addstory",{footer:true,user});
   
@@ -598,7 +577,7 @@ router.post("/story",isloggedIn, async function(req,res){
     
 
   user.story.push(story._id);
-  console.log("This is story",story);
+
   await user.save();
   res.redirect("/feed");
 
@@ -659,7 +638,7 @@ router.get("/followers", isloggedIn, async (req, res, next) => {
   let user= await users.findOne({username:req.session.passport.user})
   .populate("followers")
   
-  console.log(user);
+  
   
  
   res.render("followers",{footer:true,user});
@@ -676,7 +655,7 @@ router.get("/following", isloggedIn, async (req, res, next) => {
   let user= await users.findOne({username:req.session.passport.user})
   .populate("following")
   
-  console.log(user);
+  
   
  
   res.render("following",{footer:true,user});
