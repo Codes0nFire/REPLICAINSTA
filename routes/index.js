@@ -13,7 +13,7 @@ const imagekit=require("./imagekit");
 const path=require("path");
 passport.use(new localStrategy(users.authenticate()))
 
-router.get('/', function(req, res) {
+router.get('/',isloggedIn, function(req, res) {
   res.render('index', {footer: false});
 });
 
@@ -55,21 +55,21 @@ router.get('/search',isloggedIn, async function(req, res) {
   res.render('search', {footer: true,user});
 });
 
-router.get('/user/:search',async function(req, res) {
+router.get('/user/:search',isloggedIn,async function(req, res) {
   const search=req.params.search;
   const user=await users.find({username: new RegExp('^'+search,'i')});
   res.json(user);
   console.log(user); 
 });
 
-router.get('/edit',async function(req, res) {
+router.get('/edit',isloggedIn,async function(req, res) {
   var user=await users.findOne({username:req.session.passport.user});
 
   res.render('edit', {footer: true,user});
 });
 
 
-router.post('/update',async function(req, res) {
+router.post('/update',isloggedIn,async function(req, res) {
  
      var user= await  users.findOneAndUpdate(
           {username:req.session.passport.user},
@@ -90,7 +90,7 @@ router.post('/update',async function(req, res) {
 });
 
 
-router.post('/edit/profilepicture',async function (req, res, next) {
+router.post('/edit/profilepicture',isloggedIn,async function (req, res, next) {
 
    var user=await users.findOne({username:req.session.passport.user});
 
@@ -128,7 +128,7 @@ router.get('/upload',isloggedIn, async function(req, res) {
 });
 
 
-router.post("/upload", async function(req,res){
+router.post("/upload",isloggedIn, async function(req,res){
   const user= await users.findOne({username:req.session.passport.user});
 
 
@@ -160,7 +160,7 @@ router.post("/upload", async function(req,res){
 })
 
 
-router.post('/register', (req, res, next) => {
+router.post('/register',isloggedIn, (req, res, next) => {
 var newUser = {
 
   username:req.body.username,
@@ -647,6 +647,47 @@ async function removeExpiredStoryIds() {
     await user.save();
   }
 }
+
+
+
+
+
+//viewfollowers
+router.get("/followers", isloggedIn, async (req, res, next) => {
+  
+
+  let user= await users.findOne({username:req.session.passport.user})
+  .populate("followers")
+  
+  console.log(user);
+  
+ 
+  res.render("followers",{footer:true,user});
+  
+ });
+
+
+
+
+//viewfollowing
+router.get("/following", isloggedIn, async (req, res, next) => {
+  
+
+  let user= await users.findOne({username:req.session.passport.user})
+  .populate("following")
+  
+  console.log(user);
+  
+ 
+  res.render("following",{footer:true,user});
+  
+ });
+
+
+
+
+
+
 
 
 setInterval(removeExpiredStoryIds, 1 * 60 * 60 * 1000); 
