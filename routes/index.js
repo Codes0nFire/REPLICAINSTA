@@ -521,7 +521,7 @@ user.story.forEach(async function(story){
   
   let deletedid=   await users.deleteOne({_id:user.id})
 
-  console.log(deletedid,deleteduser)
+  
 
   res.redirect("/");
 
