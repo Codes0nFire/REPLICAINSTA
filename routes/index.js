@@ -515,6 +515,8 @@ user.story.forEach(async function(story){
 
 })
 
+ await commentModel.deleteMany({user:user.id})
+
 
   let deleteduser= await users.findOneAndDelete({username:req.session.passport.user});
 
