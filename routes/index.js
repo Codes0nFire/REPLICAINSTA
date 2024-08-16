@@ -515,20 +515,6 @@ user.story.forEach(async function(story){
 
 })
 
-async function deleteProfileImage(){
-
-  
-const profileImageId= user.profileImage.fileId
-
-await imagekit.deleteFile(profileImageId);
-
-}
-
-deleteProfileImage()
-
-
-
-  
 
   let deleteduser= await users.findOneAndDelete({username:req.session.passport.user});
 
